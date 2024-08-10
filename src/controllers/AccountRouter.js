@@ -33,4 +33,21 @@ router.get("/findById/:id", async (request, response, next) => {
   }
 });
 
+// Get accounts by type
+router.get("/findByType/:type", async (request, response, next) => {
+  try {
+    let result = await Account.find({ type: request.params.type }).exec();
+    if (!result.length) {
+      return response.status(404).json({ message: "No accounts found for this type" });
+    }
+    response.json({
+      message: "Accounts fetched successfully",
+      result: result
+    });
+  } catch (error) {
+    error.status = 500;
+    next(error);
+  }
+});
+
 module.exports = router;

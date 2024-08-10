@@ -1,4 +1,3 @@
-
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv');
@@ -9,9 +8,7 @@ dotenv.config();
 // Compare raw password to encrypted password
 async function comparePasswords(plaintextPassword, encryptedPassword) {
 	let doesPasswordMatch = false;
-
 	doesPasswordMatch = await bcrypt.compare(plaintextPassword, encryptedPassword);
-
 	return doesPasswordMatch;
 }
 
@@ -33,27 +30,29 @@ function createJwt(userId) {
 	return newJwt;
 }
 
-// Validate a JWT 
-function validateJwt(jwtToValidate){
-	let isJwtValid = false;
-
-	jwt.verify(jwtToValidate, process.env.JWT_KEY, (error, decodedJwt) => {
-		if (error){
-			throw new Error("User JWT is not valid!");
-		}
-
-		console.log("Decoded JWT data:");
-		console.log(decodedJwt);
-		isJwtValid = true;
-	});
-
-	return isJwtValid;
-}
 
 function decodeJwt(jwtToDecode){
 	let decodedData = jwt.verify(jwtToDecode, process.env.JWT_KEY)
 	return decodedData;
 }
+
+function validateJwt(req, res, next) {
+	const token = req.header("Authorization");
+	
+	if (!token) {
+		return res.status(401).json({ message: "Access denied. No token provided." });
+	}
+  
+	try {
+	  const decoded = jwt.verify(token, process.env.JWT_KEY);
+	  req.userId = decoded.id; // Set the decoded JWT payload to req.user
+	  next(); // Proceed to the next middleware or route handler
+	} catch (error) { console.log("error", error)
+	  res.status(401).json({ message: "Invalid token." });
+	}
+  }
+
+
 
 module.exports = {
 	comparePasswords,
