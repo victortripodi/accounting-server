@@ -5,8 +5,7 @@ const { databaseConnect, databaseClear, databaseClose } = require("./database");
 async function seedAccounts() {
     console.log("Seeding accounts data");
     let result = await Account.insertMany(accountsData);
-    console.log("Accounts seeded successfully:");
-    console.log(result);
+    console.log("Accounts seeded successfully:" , { result });
     return result;
   }
 

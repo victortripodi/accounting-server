@@ -1,17 +1,19 @@
 const express = require("express");
 const userRouter = require("./controllers/UserRouter.js");
 const accountRouter = require("./controllers/AccountRouter");
-// const journalRouter = require("./controllers/JournalRouter.js");
+const journalRouter = require("./controllers/JournalRouter.js");
+const entityRouter = require("./controllers/EntityRouter.js");
+const salesRouter = require("./controllers/SalesRouter.js");
 
 
 
 const app = express();
-// const cors = require("cors");
+const cors = require("cors");
 
 // Allows POST requests to have JSON body content
 app.use(express.json());
 
-// app.use(cors());
+app.use(cors());
 
 app.get("/", (request, response, next) => {
 	response.json({
@@ -19,12 +21,12 @@ app.get("/", (request, response, next) => {
 	});
 });
 
-// Use the user router
+// Use Routers
 app.use("/users", userRouter);
-// Use the account router
 app.use("/accounts", accountRouter);
-// Use the journal router
-// app.use("/journal", journalRouter);
+app.use("/journal", journalRouter);
+app.use("/entity", entityRouter);
+app.use("/sales", salesRouter);
 
 
 app.get("*", (request, response, next) => {
