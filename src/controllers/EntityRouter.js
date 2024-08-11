@@ -41,9 +41,6 @@ router.get("/:id", validateJwt, async (request, response, next) => {
 router.get("/findByType/:type", validateJwt, async (request, response, next) => {
   try {
     let result = await Entity.find({ type: request.params.type }).exec();
-    if (!result.length) {
-      return response.status(404).json({ message: "No Entity found for this type" });
-    }
     response.json({
       message: "Entity fetched successfully",
       result: result
@@ -68,7 +65,7 @@ router.post("/", validateJwt, async (request, response, next) => {
       user: request.userId,
     };
 
-    let result = await Entity.create();
+    let result = await Entity.create(createInput);
     response.json({
       message: "Entity created successfully",
       result: result
