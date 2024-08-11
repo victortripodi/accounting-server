@@ -16,7 +16,7 @@ async function comparePasswords(plaintextPassword, encryptedPassword) {
 function createJwt(userId) {
 	let newJwt = jwt.sign(
 		// Payload of data
-		{id: userId},
+		{ id: userId },
 
 		// Secret key for JWT signature
 		process.env.JWT_KEY,
@@ -31,26 +31,27 @@ function createJwt(userId) {
 }
 
 
-function decodeJwt(jwtToDecode){
+function decodeJwt(jwtToDecode) {
 	let decodedData = jwt.verify(jwtToDecode, process.env.JWT_KEY)
 	return decodedData;
 }
 
 function validateJwt(req, res, next) {
 	const token = req.header("Authorization");
-	
+
 	if (!token) {
 		return res.status(401).json({ message: "Access denied. No token provided." });
 	}
-  
+
 	try {
-	  const decoded = jwt.verify(token, process.env.JWT_KEY);
-	  req.userId = decoded.id; // Set the decoded JWT payload to req.user
-	  next(); // Proceed to the next middleware or route handler
-	} catch (error) { console.log("error", error)
-	  res.status(401).json({ message: "Invalid token." });
+		const decoded = jwt.verify(token, process.env.JWT_KEY);
+		req.userId = decoded.id; // Set the decoded JWT payload to req.user
+		next(); // Proceed to the next middleware or route handler
+	} catch (error) {
+		console.log("error", error)
+		res.status(401).json({ message: "Invalid token." });
 	}
-  }
+}
 
 
 

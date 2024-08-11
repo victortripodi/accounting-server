@@ -40,7 +40,7 @@ router.get("/:id", validateJwt, async (request, response, next) => {
 // Get entity by type
 router.get("/findByType/:type", validateJwt, async (request, response, next) => {
   try {
-    let result = await Entity.find({ type: request.params.type }).exec();
+    let result = await Entity.find({ type: request.params.type, user: request.userId  }).exec();
     response.json({
       message: "Entity fetched successfully",
       result: result
