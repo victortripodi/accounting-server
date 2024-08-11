@@ -13,7 +13,10 @@ const cors = require("cors");
 // Allows POST requests to have JSON body content
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({ 
+    credentials: true, 
+    origin: 'https://accountingvt.netlify.app',
+}));
 
 app.get("/", (request, response, next) => {
 	response.json({

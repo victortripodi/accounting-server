@@ -68,24 +68,5 @@ router.post("/", validateJwt, async (request, response, next) => {
   }
 });
 
-// Delete a sale by ID
-router.delete("/:id", validateJwt, async (request, response, next) => {
-  try {
-    let result = await Sales.findByIdAndDelete(request.params.id).exec();
-
-    if (!result) {
-      return response.status(404).json({ message: "Sale record not found" });
-    }
-
-    response.json({
-      message: "Sale record deleted successfully",
-      result: result
-    });
-  } catch (error) {
-    console.log("Error on delete a sale", error);
-    error.status = 500;
-    next(error);
-  }
-});
 
 module.exports = router;

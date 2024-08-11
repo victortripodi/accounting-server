@@ -75,36 +75,7 @@ router.post("/", validateJwt, async (request, response, next) => {
     });
   } catch (error) {
     console.log("Error creating an entity", error);
-    error.status = 400;
-    next(error);
-  }
-});
-
-// Update an entity by ID
-router.patch("/:id", validateJwt, async (request, response, next) => {
-  try {
-    let updateInput = {
-      name: request.body.name,
-      ABN: request.body.ABN,
-      email: request.body.email,
-      address: request.body.address,
-      postcode: request.body.postcode,
-      type: request.body.type
-    };
-
-    let result = await Entity.findByIdAndUpdate(request.params.id, updateInput, { new: true }).exec();
-
-    if (!result) {
-      return response.status(404).json({ message: "Entity not found" });
-    }
-
-    response.json({
-      message: "Entity updated successfully",
-      result: result
-    });
-  } catch (error) {
-    console.log("Error updating an entity", error);
-    error.status = 400;
+    response.status(400).json({ message: "Error creating entity", error: error.message });
     next(error);
   }
 });
