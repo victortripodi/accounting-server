@@ -1,18 +1,19 @@
 const express = require("express");
 const { Entity } = require("../models/Entity");
-const {validateJwt} = require("../utils/authHelpers");
+const { validateJwt } = require("../utils/authHelpers");
 
 const router = express.Router();
 
 // Get all entities
-router.get("/", validateJwt,  async (request, response, next) => {
+router.get("/", validateJwt, async (request, response, next) => {
   try {
-    let result = await Entity.find({user: request.userId}).exec();
+    let result = await Entity.find({ user: request.userId }).exec();
     response.json({
       message: "Entities fetched successfully",
       result: result
     });
   } catch (error) {
+    console.log("Error fetching entities", error);
     error.status = 500;
     next(error);
   }
@@ -30,6 +31,7 @@ router.get("/:id", validateJwt, async (request, response, next) => {
       result: result
     });
   } catch (error) {
+    console.log("Error fetching entity by ID", error);
     error.status = 500;
     next(error);
   }
@@ -47,6 +49,7 @@ router.get("/findByType/:type", validateJwt, async (request, response, next) => 
       result: result
     });
   } catch (error) {
+    console.log("Error fetching entity by type", error);
     error.status = 500;
     next(error);
   }
@@ -54,34 +57,32 @@ router.get("/findByType/:type", validateJwt, async (request, response, next) => 
 
 // Create an Entity
 router.post("/", validateJwt, async (request, response, next) => {
+  try {
+    let createInput = {
+      name: request.body.name,
+      ABN: request.body.ABN,
+      email: request.body.email,
+      address: request.body.address,
+      postcode: request.body.postcode,
+      type: request.body.type,
+      user: request.userId,
+    };
 
-  let createInput = {
-    name: request.body.name,
-    ABN: request.body.ABN,
-    email: request.body.email,
-    address: request.body.address,
-    postcode: request.body.postcode,
-    type: request.body.type,
-    user: request.userId,
+    let result = await Entity.create();
+    response.json({
+      message: "Entity created successfully",
+      result: result
+    });
+  } catch (error) {
+    console.log("Error creating an entity", error);
+    error.status = 400;
+    next(error);
   }
-
-	let result = await Entity.create(createInput).catch(error => {
-		error.status = 400;
-		return error
-	});
-
-	if (result.errors) {
-		return next(result);
-	}
-
-	response.json({
-		message:"Entity created successfully",
-		result: result
-	});
 });
 
 // Update an entity by ID
-router.patch("/findById/:id", validateJwt, async (request, response, next) => {
+router.patch("/:id", validateJwt, async (request, response, next) => {
+  try {
     let updateInput = {
       name: request.body.name,
       ABN: request.body.ABN,
@@ -90,9 +91,8 @@ router.patch("/findById/:id", validateJwt, async (request, response, next) => {
       postcode: request.body.postcode,
       type: request.body.type
     };
-    
-    try {
-      let result = await Entity.findByIdAndUpdate(request.params.id, updateInput).exec();
+
+    let result = await Entity.findByIdAndUpdate(request.params.id, updateInput, { new: true }).exec();
 
     if (!result) {
       return response.status(404).json({ message: "Entity not found" });
@@ -103,6 +103,7 @@ router.patch("/findById/:id", validateJwt, async (request, response, next) => {
       result: result
     });
   } catch (error) {
+    console.log("Error updating an entity", error);
     error.status = 400;
     next(error);
   }
