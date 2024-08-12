@@ -4,6 +4,8 @@ const accountRouter = require("./controllers/AccountRouter");
 const journalRouter = require("./controllers/JournalRouter.js");
 const entityRouter = require("./controllers/EntityRouter.js");
 const salesRouter = require("./controllers/SalesRouter.js");
+const expensesRouter = require("./controllers/ExpensesRouter.js");
+
 
 
 
@@ -32,6 +34,8 @@ app.use("/accounts", accountRouter);
 app.use("/journal", journalRouter);
 app.use("/entity", entityRouter);
 app.use("/sales", salesRouter);
+app.use("/expenses", expensesRouter);
+
 
 
 app.get("*", (request, response, next) => {
